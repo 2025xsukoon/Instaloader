@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instagram Reel & Story Downloader</title>
+  <title>Instagram Downloader</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
       margin: 0;
       padding: 0;
-      background: #f3f4f6;
       color: #111827;
     }
-
     .container {
       max-width: 600px;
       margin: 5rem auto;
@@ -22,12 +21,6 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
       text-align: center;
     }
-
-    h1 {
-      font-size: 2rem;
-      color: #047857;
-    }
-
     input[type="text"] {
       width: 90%;
       padding: 0.75rem;
@@ -36,7 +29,6 @@
       border-radius: 8px;
       font-size: 1rem;
     }
-
     button {
       background: #047857;
       color: white;
@@ -45,9 +37,7 @@
       border-radius: 8px;
       font-size: 1rem;
       cursor: pointer;
-      margin-top: 0.5rem;
     }
-
     .download-btn {
       background: #1e3a8a;
       color: white;
@@ -58,7 +48,6 @@
       font-weight: bold;
       display: inline-block;
     }
-
     .result {
       margin-top: 2rem;
     }
@@ -68,7 +57,6 @@
   <div class="container">
     <h1>📥 Insta Downloader</h1>
     <p>Download Reels, Stories & Photos from public Instagram links</p>
-
     <input type="text" id="urlInput" placeholder="Paste Instagram link here..." />
     <button onclick="downloadMedia()">Download</button>
 
@@ -94,7 +82,7 @@
       const formData = new FormData();
       formData.append("q", url);
 
-      const response = await fetch("https://saveig.app/api/ajaxSearch", {
+      const response = await fetch("https://corsproxy.io/?https://saveig.app/api/ajaxSearch", {
         method: "POST",
         body: formData
       });
