@@ -1,58 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Insta Downloader</title>
   <style>
-    body{font-family:sans-serif;background:#f3f4f6;margin:0;padding:0}
-    .container{max-width:600px;margin:5rem auto;padding:2rem;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.1);text-align:center}
-    input{width:90%;padding:0.75rem;margin:1rem auto;border:1px solid #ccc;border-radius:8px;font-size:1rem;display:block}
-    button{background:#047857;color:#fff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:1rem;cursor:pointer}
-    .download-btn{background:#1e3a8a;color:#fff;padding:0.75rem 1.5rem;margin-top:1rem;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block}
-    .result{margin-top:2rem}
-    video,img{max-width:100%}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #dc2626;
+    }
+    input[type='text'] {
+      width: 90%;
+      max-width: 500px;
+      padding: 10px;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #result {
+      margin-top: 2rem;
+      display: none;
+      text-align: center;
+    }
+    #result video,
+    #result img {
+      max-width: 90%;
+      margin: 1rem 0;
+      border-radius: 8px;
+    }
+    a.download-link {
+      display: inline-block;
+      margin-top: 1rem;
+      background: #22c55e;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📥 Insta Downloader</h1>
-    <input id="urlInput" placeholder="Paste Instagram Reel/Post/Story URL" />
-    <button onclick="downloadMedia()">Download</button>
-    <div id="result" class="result" style="display:none">
-      <h3>Preview</h3>
-      <video id="video" controls style="display:none"></video>
-      <img id="image" style="display:none"/>
-      <br/>
-      <a id="downloadBtn" target="_blank" download><button class="download-btn">Download Now</button></a>
-    </div>
-  </div>
-  <script>
-    async function downloadMedia(){
+  <h1>💾 Insta Downloader</h1>
+  <input type="text" id="urlInput" placeholder="Paste Instagram URL here..." />
+  <button onclick="downloadMedia()">Download</button>  <div id="result">
+    <video id="video" controls style="display: none;"></video>
+    <img id="image" style="display: none;" />
+    <br />
+    <a id="downloadBtn" class="download-link" download target="_blank">Download</a>
+  </div>  <script>
+    async function downloadMedia() {
       const url = document.getElementById('urlInput').value.trim();
-      if(!url){alert('Paste a URL!');return;}
-      try{
-        const resp = await fetch(`https://instagram-media-downloader.p.rapidapi.com/rapid/post.php?url=${encodeURIComponent(url)}`, {
-          method:'GET',
-          headers:{
-            'X-RapidAPI-Key':'29d2a50795msh6d587b324fd4728p1a94c3jsnf249e3a65552',
-            'X-RapidAPI-Host':'instagram-media-downloader.p.rapidapi.com'
-          }
-        });
-        const data = await resp.json();
-        if(!data?.media?.length){alert('No media found.');return;}
-        const media = data.media[0];
-        document.getElementById('video').src = media.includes('.mp4')? media : '';
-        document.getElementById('image').src = !media.includes('.mp4')? media : '';
-        document.getElementById('video').style.display = media.includes('.mp4')? 'block':'none';
-        document.getElementById('image').style.display = !media.includes('.mp4')? 'block':'none';
-        document.getElementById('downloadBtn').href = media;
-        document.getElementById('result').style.display='block';
-      } catch(err){
+      if (!url) return alert("Paste a valid Instagram link!");
+
+      try {
+        const response = await fetch(`https://instadl-api.vercel.app/?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if (!data.url) return alert("No media found or unsupported format.");
+
+        const mediaUrl = data.url;
+        const isVideo = mediaUrl.includes('.mp4');
+
+        document.getElementById('video').style.display = isVideo ? 'block' : 'none';
+        document.getElementById('image').style.display = !isVideo ? 'block' : 'none';
+
+        if (isVideo) {
+          document.getElementById('video').src = mediaUrl;
+        } else {
+          document.getElementById('image').src = mediaUrl;
+        }
+
+        document.getElementById('downloadBtn').href = mediaUrl;
+        document.getElementById('result').style.display = 'block';
+      } catch (err) {
         console.error(err);
-        alert('Error fetching media. Check console.');
+        alert("Something went wrong. Try a different URL.");
       }
     }
-  </script>
-</body>
+  </script></body>
 </html>
